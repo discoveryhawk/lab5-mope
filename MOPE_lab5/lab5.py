@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from numpy.linalg import solve
 from math import fabs as fab
 from math import sqrt
@@ -167,7 +169,7 @@ right = [my, find_right(1), find_right(2), find_right(3), find_right(4), find_ri
 
 beta = solve(left, right)
 
-print("(ಠ‿ಠ)﻿"*8)
+print("(ಠ‿ಠ)﻿" * 8)
 print("—" * 50)
 
 print("Рівняння регресії з урахуванням квадратичних членів:")
@@ -193,11 +195,13 @@ while not cohren:
     print("—" * 50)
 
     print("Критерій Кохрена:")
+    start_time = datetime.now()
     Gt = Critical_values.get_cohren_value(f2, f1, q)
     if Gt > Gp or m >= 25:
         print("Дисперсія однорідна при рівні значимості {:.2f}! Збільшувати m не потрібно.".format(q))
         print("—" * 50)
         cohren = True
+        cohren_time_in_ms = (datetime.now() - start_time).microseconds
     else:
         print("Дисперсія не однорідна при рівні значимості {:.2f}!".format(q))
         print("—" * 50)
@@ -206,7 +210,9 @@ while not cohren:
         exit()
 
 dispersion_b2 = sum(dispersion_y) / (N * N * m)
+start_time = datetime.now()
 student_lst = list(student_test(beta))
+student_time_in_ms = (datetime.now() - start_time).microseconds
 print("Отримане рівняння регресії з урахуванням критерія Стьюдента:")
 print("{:.3f} + {:.3f} * X1 + {:.3f} * X2 + {:.3f} * X3 + {:.3f} * Х1X2 + {:.3f} * Х1X3 + {:.3f} * Х2X3"
       "+ {:.3f} * Х1Х2X3 + {:.3f} * X11^2 + {:.3f} * X22^2 + {:.3f} * X33^2 = ŷ\nПеревірка:"
@@ -218,9 +224,14 @@ print("—" * 50)
 
 print("Критерій Фішера:")
 d = 11 - student_lst.count(0)
+
+start_time = datetime.now()
 if fisher_test():
     print("Рівняння регресії адекватне стосовно оригіналу.")
 else:
     print("Рівняння регресії неадекватне стосовно оригіналу.")
+fisher_time_in_ms = (datetime.now() - start_time).microseconds
+print("Час виконання всіх статистичних перевірок {} секунд".format(
+    (cohren_time_in_ms + student_time_in_ms + fisher_time_in_ms) / 100000))
 print("—" * 50)
-print("(◕‿◕)♡"*7)
+print("(◕‿◕)♡" * 7)
